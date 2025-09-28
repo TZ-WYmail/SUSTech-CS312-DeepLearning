@@ -30,7 +30,7 @@
 ---
 
 &lt;!-- TOPICS --&gt;
-## 🔍 核心主题速览 &lt;a name="topics"&gt;&lt;/a&gt;
+## 🔍 核心主题速览 
 
 | 模块 | 关键词 |
 | ---- | ------ |
@@ -44,7 +44,7 @@
 
 
 &lt;!-- ENVIRONMENT SETUP --&gt;
-## 🛠️ 编程环境配置指南（Windows） &lt;a name="env"&gt;&lt;/a&gt;
+## 🛠️ 编程环境配置指南（Windows） 
 
 &gt; ⚙️ 本课程含 3 个编程作业，需使用 **Python + PyTorch**。  
 &gt; 提供两种安装方式：① `pip`（轻量）② `conda`（推荐，隔离性强）。
