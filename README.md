@@ -6,9 +6,6 @@
   <a href="#-about"><strong>探索本仓库 »</strong></a>
   <br />
   <br />
-  <a href="https://github.com/TZ-WYmail/SUSTech-CS312-DeepLearning.git/issues">报告 Bug</a>
-  ·
-  <a href="https://github.com/TZ-WYmail/SUSTech-CS312-DeepLearning.git/issues">请求功能</a>
 </p>
 
 
