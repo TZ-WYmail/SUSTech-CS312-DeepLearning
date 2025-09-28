@@ -12,23 +12,6 @@
 </p>
 
 
----
-
-&lt;!-- TABLE OF CONTENTS --&gt;
-&lt;details open="open"&gt;
-  &lt;summary&gt;&lt;h2 style="display: inline-block"&gt;📖 目录&lt;/h2&gt;&lt;/summary&gt;
-  &lt;ol&gt;
-    &lt;li&gt;&lt;a href="#about"&gt;关于课程&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;a href="#assessment"&gt;评分标准&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;a href="#schedule"&gt;课程安排&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;a href="#topics"&gt;核心主题&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;a href="#contrib"&gt;贡献指南&lt;/a&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;a href="#license"&gt;许可证&lt;/a&gt;&lt;/li&gt;
-  &lt;/ol&gt;
-&lt;/details&gt;
-
-
----
 
 &lt;!-- ABOUT THE PROJECT --&gt;
 ## 🎯 关于课程 &lt;a name="about"&gt;&lt;/a&gt;
