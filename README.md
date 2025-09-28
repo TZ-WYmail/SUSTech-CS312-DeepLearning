@@ -1,40 +1,15 @@
-# SUSTech-CS312-DeepLearning
-&lt;!-- PROJECT SHIELDS --&gt;
-&lt;!--
-*** Thanks for checking out this README. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Thanks again! Now let's create something AMAZING! :)
---&gt;
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
+<h1 align="center">🧠 Deep Learning (CS324) - Course Hub</h1>
 
-
-
-&lt;!-- PROJECT LOGO --&gt;
-&lt;br /&gt;
-&lt;p align="center"&gt;
-  &lt;!-- 如果后面有 logo，可以取消注释 --&gt;
-  &lt;!-- &lt;a href="https://github.com/your_username/repo_name"&gt;
-    &lt;img src="images/logo.png" alt="Logo" width="80" height="80"&gt;
-  &lt;/a&gt; --&gt;
-
-  &lt;h1 align="center"&gt;🧠 Deep Learning (CS324) - Course Hub&lt;/h1&gt;
-
-  &lt;p align="center"&gt;
-    南方科技大学《深度学习》课程一站式资源仓库
-    &lt;br /&gt;
-    &lt;a href="#-about"&gt;&lt;strong&gt;探索本仓库 »&lt;/strong&gt;&lt;/a&gt;
-    &lt;br /&gt;
-    &lt;br /&gt;
-    &lt;a href="https://github.com/your_username/repo_name/issues"&gt;报告 Bug&lt;/a&gt;
-    ·
-    &lt;a href="https://github.com/your_username/repo_name/issues"&gt;请求功能&lt;/a&gt;
-  &lt;/p&gt;
-&lt;/p&gt;
+<p align="center">
+  南方科技大学《深度学习》课程一站式资源仓库
+  <br />
+  <a href="#-about"><strong>探索本仓库 »</strong></a>
+  <br />
+  <br />
+  <a href="https://github.com/TZ-WYmail/SUSTech-CS312-DeepLearning.git/issues">报告 Bug</a>
+  ·
+  <a href="https://github.com/TZ-WYmail/SUSTech-CS312-DeepLearning.git/issues">请求功能</a>
+</p>
 
 
 ---
