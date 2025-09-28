@@ -10,8 +10,8 @@
 
 
 
-&lt;!-- ABOUT THE PROJECT --&gt;
-## 🎯 关于课程 &lt;a name="about"&gt;&lt;/a&gt;
+
+## 🎯 关于课程
 
 &gt; 登录即可解锁全部功能与服务 🚀
 
@@ -29,7 +29,7 @@
 
 ---
 
-&lt;!-- TOPICS --&gt;
+
 ## 🔍 核心主题速览 
 
 | 模块 | 关键词 |
@@ -40,10 +40,9 @@
 
 ---
 
-&lt;!-- CONTRIBUTING --&gt;
 
 
-&lt;!-- ENVIRONMENT SETUP --&gt;
+
 ## 🛠️ 编程环境配置指南（Windows） 
 
 &gt; ⚙️ 本课程含 3 个编程作业，需使用 **Python + PyTorch**。  
