@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>【深度学习】lecture4反向传播.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8%E7%B3%BB%E5%88%97%E5%9B%9B%E4%B8%80%E6%96%87%E7%9C%8B%E6%87%82%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%ADbackpropagation">深度学习入门系列（四）：一文看懂反向传播（Backpropagation）</h1>
+<blockquote>
+<p>作者：南方的狮子先生<br>
+标签：深度学习 / 反向传播 / PyTorch / 零基础 / 可视化<br>
+目标：让只懂加减乘除的你也能秒懂“反向传播”！</p>
+</blockquote>
+<hr>
+<h2 id="%E4%B8%80%E4%B8%BA%E4%BB%80%E4%B9%88%E5%8F%88%E6%9C%89%E6%96%B0%E6%A6%82%E5%BF%B5">一、为什么又有新概念？</h2>
+<p>前三节课我们学会了：</p>
+<ol>
+<li>把神经元当成“带旋钮（权重）的小盒子”；</li>
+<li>用“损失函数”衡量预测有多差；</li>
+<li>用“梯度下降”拧旋钮，让损失变小。</li>
+</ol>
+<p>但问题是——<strong>怎么快速算出每个旋钮该往哪边拧、拧多少？</strong><br>
+如果网络有 10 层、每层 1000 个旋钮，手动算梯度岂不是要算到秃头？</p>
+<p>于是，<strong>反向传播（Backpropagation）</strong> 应运而生：<br>
+<strong>一种用“链式法则”把梯度像快递一样层层退回的算法。</strong></p>
+<hr>
+<h2 id="%E4%BA%8C%E5%BF%AB%E9%80%92%E6%AF%94%E5%96%BB%E6%8A%8A%E6%A2%AF%E5%BA%A6%E9%80%80%E5%9B%9E%E7%BB%99%E6%AF%8F%E4%B8%80%E5%B1%82">二、快递比喻：把梯度退回给每一层</h2>
+<p>想象一条流水线：</p>
+<blockquote>
+<p>原料（输入 x）→ 工人 1（层 1）→ 工人 2（层 2）→ … → 质检（损失 L）</p>
+</blockquote>
+<p>现在质检发现：<em>“最后成品误差 10 分！”</em><br>
+老板希望<strong>每个工人</strong>都知道“自己该负多少责任”，好调整操作手册（权重 w）。</p>
+<p>反向传播就像<strong>写“退货单”</strong>：</p>
+<ol>
+<li>先写最后一步的“责任单”：∂L/∂a^L（L 层输出对损失的影响）</li>
+<li>按相反顺序，把责任单往前传：
+<ul>
+<li>用“链式法则”把责任拆成两部分：
+<ul>
+<li>你本人造成的（∂a^l/∂w^l）</li>
+<li>你后面的人连累的（∂L/∂a^{l+1}）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>每个工人收到单据后，就知道“我该往哪边拧旋钮”（更新 w）</li>
+</ol>
+<hr>
+<h2 id="%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E7%AE%97%E6%B3%95%E7%9A%84%E6%A0%B8%E5%BF%83%E5%85%AC%E5%BC%8F%E8%AE%B0%E5%BF%86%E5%B9%B6%E8%83%8C%E8%AF%B5">梯度下降算法的核心公式（记忆并背诵）</h2>
+<p><img src="image.png" alt="alt text"></p>
+<p>这个公式是梯度下降算法的核心公式，用于更新模型的参数 ( w )。它是深度学习中优化模型的关键步骤之一。现在我们来详细介绍公式中的每个参数：</p>
+<h3 id="1--wt--%E5%92%8C--wt1">1. ( w^{(t)} ) 和 ( w^{(t+1)} )</h3>
+<ul>
+<li>( w^{(t)} ) 表示当前的参数值（在第 ( t ) 次迭代时的权重）。</li>
+<li>( w^{(t+1)} ) 表示更新后的参数值（在第 ( t+1 ) 次迭代时的权重）。</li>
+</ul>
+<h3 id="2--etat">2. ( \eta_t )</h3>
+<ul>
+<li>( \eta_t ) 是<strong>学习率（Learning Rate）</strong>，它是一个超参数，用于控制每次更新的步长大小。
+<ul>
+<li>如果 ( \eta_t ) 太大：可能会导致训练发散（损失函数值越来越大）。</li>
+<li>如果 ( \eta_t ) 太小：训练会变得非常慢，可能需要很多次迭代才能收敛。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3--nablawt-l-gradient-of-loss-wrt-parameters%E6%A2%AF%E5%BA%A6%E6%98%AF%E4%B8%80%E4%B8%AA%E5%90%91%E9%87%8F%E5%90%8C%E6%97%B6%E4%B9%9F%E6%98%AF%E4%B8%80%E4%B8%AA%E6%95%B0%E5%80%BC%E7%9B%B8%E5%BD%93%E4%BA%8E%E7%9B%B4%E6%8E%A5%E7%94%A8%E5%AE%83%E6%9D%A5%E8%A1%A8%E7%A4%BA%E6%AD%A5%E5%B9%85%E7%9A%84%E9%95%BF%E5%BA%A6%E6%89%80%E4%BB%A5%E5%B0%B1%E6%B2%A1%E6%9C%89%E4%B9%98%E4%B8%80%E4%B8%AA%E5%B8%B8%E6%95%B0%E4%BA%86%E8%80%8C%E6%98%AF%E7%94%A8%E5%AD%A6%E4%B9%A0%E7%8E%87%E6%9D%A5%E7%9B%B4%E6%8E%A5%E6%8E%A7%E5%88%B6">3. ( \nabla_{w^{(t)}} L )（Gradient of loss wrt parameters）（梯度是一个向量，同时也是一个数值，相当于直接用它来表示步幅的长度，所以就没有乘一个常数了，而是用学习率来直接控制）</h3>
+<ul>
+<li>这是<strong>损失函数 ( L ) 对参数 ( w^{(t)} ) 的梯度</strong>，表示损失对参数的敏感程度。
+<ul>
+<li>梯度是一个向量，方向指向损失函数增长最快的方向。</li>
+<li>在梯度下降中，我们沿着梯度的负方向更新参数，以减小损失。</li>
+</ul>
+</li>
+</ul>
+<h3 id="4--l">4. ( L )</h3>
+<ul>
+<li>( L ) 是<strong>损失函数（Loss Function）</strong>，用于衡量模型的预测值与真实值之间的误差。
+<ul>
+<li>常见的损失函数包括均方误差（MSE）、交叉熵损失（Cross-Entropy Loss）等。</li>
+</ul>
+</li>
+</ul>
+<h3 id="5--wt1--wt---etat-nablawt-l">5. ( w^{(t+1)} = w^{(t)} - \eta_t \nabla_{w^{(t)}} L )</h3>
+<ul>
+<li>这是<strong>梯度下降的更新公式</strong>：
+<ul>
+<li>它表示每次迭代时，参数 ( w ) 的更新量等于<strong>学习率 ( \eta_t )</strong> 和<strong>梯度 ( \nabla_{w^{(t)}} L )</strong> 的乘积。</li>
+<li>更新的方向是梯度的<strong>负方向</strong>，因为我们希望减小损失 ( L )。</li>
+</ul>
+</li>
+</ul>
+<h3 id="%E5%85%AC%E5%BC%8F%E7%9A%84%E7%9B%B4%E8%A7%82%E8%A7%A3%E9%87%8A">公式的直观解释</h3>
+<ul>
+<li>梯度下降的目标是找到损失函数 ( L ) 的最小值。</li>
+<li>每次更新参数 ( w ) 时，都朝着损失函数减小的方向（梯度的负方向）移动。</li>
+<li>学习率 ( \eta_t ) 决定了每次移动的步长。</li>
+</ul>
+<h3 id="%E6%80%BB%E7%BB%93">总结</h3>
+<ul>
+<li>( w^{(t)} ) 和 ( w^{(t+1)} ) 是模型的参数状态。</li>
+<li>( \eta_t ) 控制更新的步长。</li>
+<li>( \nabla_{w^{(t)}} L ) 指示损失函数的下降方向。</li>
+<li>( L ) 量化了模型的误差。</li>
+</ul>
+<h3 id="%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0%E5%8A%A8%E6%89%8B%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0">代码实现：（动手深度学习）</h3>
+<pre class="hljs"><code><div><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">sgd</span><span class="hljs-params">(params, lr, batch_size)</span>:</span>  <span class="hljs-comment">#@save</span>
+    <span class="hljs-string">"""小批量随机梯度下降"""</span>
+    <span class="hljs-keyword">with</span> torch.no_grad():
+        <span class="hljs-keyword">for</span> param <span class="hljs-keyword">in</span> params:
+            param -= lr * param.grad / batch_size(这个地方具体是怎么操作的就很明显了)
+            param.grad.zero_()
+</div></code></pre>
+<hr>
+<h2 id="%E4%B8%89%E6%95%B0%E5%AD%A6%E4%B8%80%E5%88%86%E9%92%9F%E9%93%BE%E5%BC%8F%E6%B3%95%E5%88%99%E5%88%B0%E5%BA%95%E9%95%BF%E5%95%A5%E6%A0%B7">三、数学一分钟：链式法则到底长啥样？</h2>
+<p>别怕，只看“形状”即可：</p>
+<p>对于第 l 层，想求损失对权重 w^l 的梯度：</p>
+<p>$$
+\frac{\partial L}{\partial w^l} = \underbrace{\left( \frac{\partial a^l}{\partial w^l} \right)^T}<em>{\text{本地 Jacobian}} \cdot \underbrace{\frac{\partial L}{\partial a^l}}</em>{\text{从上层退回来的梯度}}
+$$</p>
+<p>白话：</p>
+<ul>
+<li>左边：只跟<strong>本层</strong>的输出和权重有关，算一次永久保存。</li>
+<li>右边：等<strong>后一层</strong>算完再传给你，像快递到付。</li>
+</ul>
+<p>于是整个算法分三步：</p>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>方向</th>
+<th>做的事</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 前向</td>
+<td>从输入→输出</td>
+<td>把每层输出 a^l 存起来，准备“退货”用</td>
+</tr>
+<tr>
+<td>② 反向</td>
+<td>从输出→输入</td>
+<td>按上面公式把梯度一步步退回</td>
+</tr>
+<tr>
+<td>③ 更新</td>
+<td>原地</td>
+<td>用退回来的梯度，按 <code>w = w – lr * 梯度</code> 拧旋钮</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="%E5%9B%9B%E5%8A%A8%E7%94%BB%E5%9B%BE%E8%A7%A3%E4%B8%80%E5%BC%A0%E5%9B%BE%E8%83%9C%E8%BF%87%E5%8D%83%E8%A8%80%E4%B8%87%E8%AF%AD">四、动画图解：一张图胜过千言万语</h2>
+<p>（这里放不了动图，推荐两个在线玩具，打开就能玩）</p>
+<ol>
+<li><a href="https://playground.tensorflow.org">TensorFlow Playground</a><br>
+把“Decision boundary”勾上，点播放，看黄色点被反向传播一步步推回隐藏层。</li>
+<li><a href="https://github.com/karpathy/micrograd">Micrograd Visualizer</a><br>
+Andrej Karpathy 手写版反向传播，50 行 Python 带可视化，适合抄代码。</li>
+</ol>
+<hr>
+<h2 id="%E4%BA%94pytorch-%E5%AE%9E%E6%88%98%E4%B8%89%E8%A1%8C%E4%BB%A3%E7%A0%81%E5%AE%8C%E6%88%90%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD">五、PyTorch 实战：三行代码完成反向传播</h2>
+<p>理论看完，直接上手：</p>
+<pre class="hljs"><code><div><span class="hljs-keyword">import</span> torch
+
+<span class="hljs-comment"># 1. 定义两个可训练参数</span>
+w = torch.tensor(<span class="hljs-number">2.0</span>, requires_grad=<span class="hljs-literal">True</span>)  <span class="hljs-comment"># 权重</span>
+b = torch.tensor(<span class="hljs-number">-1.0</span>, requires_grad=<span class="hljs-literal">True</span>)  <span class="hljs-comment"># 偏置</span>
+
+<span class="hljs-comment"># 2. 前向：y = wx + b</span>
+x = torch.tensor(<span class="hljs-number">3.0</span>)
+y_pred = w * x + b
+loss = (y_pred - <span class="hljs-number">10</span>)**<span class="hljs-number">2</span>  <span class="hljs-comment"># 假设目标值是 10</span>
+
+<span class="hljs-comment"># 3. 反向：自动链式法则</span>
+loss.backward()
+
+print(w.grad)  <span class="hljs-comment"># tensor(6.)  ← 告诉你要减小 w</span>
+print(b.grad)  <span class="hljs-comment"># tensor(2.)  ← 告诉你要增大 b</span>
+</div></code></pre>
+<p><strong>解释</strong>：<br>
+<code>.backward()</code> 就是“自动写退货单”的魔法函数。<br>
+PyTorch 在后台帮你把链式法则一路拆到最底层，无需手写。</p>
+<hr>
+<h2 id="%E5%85%AD%E5%B8%B8%E8%A7%81%E5%9D%91--%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E9%97%AE%E7%AD%94">六、常见坑 &amp; 面试高频问答</h2>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>一句话答案</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>梯度消失？</td>
+<td>链式乘太多小于 1 的数，梯度趋 0 → 用 ReLU、残差、BatchNorm</td>
+</tr>
+<tr>
+<td>梯度爆炸？</td>
+<td>链式乘太多大于 1 的数，梯度爆表 → 梯度裁剪、权重初始化</td>
+</tr>
+<tr>
+<td>反向传播 vs 梯度下降？</td>
+<td>前者是“算梯度”，后者是“用梯度更新”；一个算法，一个策略</td>
+</tr>
+<tr>
+<td>必须可导？</td>
+<td>对，所以激活函数用 ReLU/Sigmoid，不用阶跃函数</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="%E4%B8%83%E6%80%BB%E7%BB%93%E5%8F%A3%E8%AF%80%E8%83%8C%E4%B8%8B%E6%9D%A5%E5%B0%B1%E8%83%BD%E8%A3%85%E5%A4%A7%E4%BD%AC">七、总结口诀（背下来就能装大佬）</h2>
+<blockquote>
+<p>“前向存结果，反向链式传；本地 Jacobian，乘以上层梯；一步降学习，万卷梯度平。”</p>
+</blockquote>
+<hr>
+<h2 id="%E5%85%AB%E4%B8%8B%E8%8A%82%E9%A2%84%E5%91%8A">八、下节预告</h2>
+<p>第 5 讲我们将用 PyTorch 搭一个 <strong>3 层 MLP</strong>，在 <strong>MNIST 手写数字</strong> 上跑一遍完整训练循环：<br>
+DataLoader → Model → Loss → Optimizer → 训练/验证/测试<br>
+<strong>把今天学的反向传播真正用起来！</strong></p>
+<hr>
+<p>如果本文对你有帮助，记得点赞 + 收藏 + 关注，评论区打卡“我懂反向传播了！”</p>
+
+</body>
+</html>
